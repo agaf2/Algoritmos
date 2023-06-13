@@ -7,8 +7,8 @@ struct Node {
 };
 
 
+Node* bot = NULL;
 Node* top = NULL;
-
 
 void push(int value) {
     Node* newNode = new Node();
@@ -17,11 +17,25 @@ void push(int value) {
     top = newNode;
 }
 
-
-void pop() {
+int converte(string input)
+{
     
-    Node* temp = top;
-    top = top->next;
+    int num = 0;
+    int n = input.length();
+ 
+    for (int i = 0; i < n; i++)
+ 
+        num = num * 10 + (int(input[i]) - 48);
+ 
+    
+    return num;
+}
+
+
+void pop(Node* cur) {
+    
+    Node* temp = cur;
+    cur = cur->next;
     int poppedValue = temp->data;
     delete temp;
    
@@ -29,21 +43,32 @@ void pop() {
 
 void procura(){
     Node* cur = top;
-    
-}
-int main() {
-    char input;
-    int pilhas;
-
-    cin >> pilhas;
-
-    while (input != 'E')
-    {
-        cin >> input;
-        if(input != 'E' && input != ' '){
-            push((int)input);
+    while(cur != NULL){
+        if(cur->data == cur->next->data){
+            
+        }
+        if(cur-> next != NULL){
+            cur->data = cur->next->data;
+            cur->next = cur->next->next;
+        }
+        else{
+            return;
         }
     }
-    
+}
+int main() {
+    string input;
+    int pilhas;
+    cin >> pilhas;
+
+    while (input[0] != 'E')
+    {
+        cin >> input;
+        if(input[0] != 'E' && input[0] != ' '){
+            push(converte(input));
+        }
+    }
+
+    procura();
     return 0;
 }
