@@ -13,6 +13,10 @@ struct Node
 Node *top = NULL;
 
 void push(int val,int index){
+    Node *newNode = new Node();
+    newNode->val = val;
+    newNode->index = index;
+    newNode->nextup = top;
 
 }
 
@@ -40,6 +44,7 @@ int main(){
     int pilhas;
     string indexa;
     int val;
+    bool first = 1;
     int printer = 0;
     
     cin >> pilhas;
@@ -49,12 +54,13 @@ int main(){
             cin >> indexa;
             if(indexa[0] != 'E' && indexa[0] != ' '){
                 cin >> val; 
-              //  if( top->val != (*val)){
+                if(first || top->val != (val)){
                     push(val, converte(indexa));
-               // }
-                //else{
+                    first = 0;
+                }
+                else{
                     pop(converte(indexa));                   
-                //}    
+                }    
             }
         }
 
