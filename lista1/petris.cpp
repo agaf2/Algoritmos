@@ -3,8 +3,8 @@
 using namespace std; 
 
 struct Node
-{
-    int val;
+{                      
+    int val;         
     Node *next;
 };
 
@@ -34,12 +34,11 @@ void push(int val,int index){
         }
         newNode->next = curr->top;
         curr->top = newNode;
-        delete curr;
+        
     }
-    delete newNode;
 }
 
-void pop(int index){
+void pop(int index, int *pilhas){
     Node *temp = new Node();
 
     if(index == 1){
@@ -47,11 +46,18 @@ void pop(int index){
         head->top = head->top->next;
         int poppedValue = temp->val;
         delete temp;
-        if(head == NULL){
+        if(head->top == NULL){
+            Stack *curr = new Stack();
             Stack *aux = new Stack();
             aux = head;
             head = head->nextstack;
+            curr = head;
+            *pilhas = *pilhas - 1;
             delete aux;
+            for(int i = 1; i < tail->index; i++ ){
+                curr->index = curr->index - 1;
+                curr = curr->nextstack;
+            }
         }
     }
     else{
@@ -70,17 +76,27 @@ void pop(int index){
         int poppedValue = temp->val;
         delete temp;
         
-        if(curr == NULL && curr->nextstack != NULL){
-            aux->nextstack = curr->nextstack;
+        if(curr->top == NULL && curr->nextstack == NULL){
+            *pilhas = *pilhas - 1;
+            aux->nextstack = NULL;
+            tail = aux;
             delete curr;
-            delete aux;
+            
         }
-        else{
+
+        else if(curr->top == NULL && curr->nextstack->top != NULL){
+            aux->nextstack = curr->nextstack;
+            *pilhas = *pilhas - 1;
             delete curr;
-            delete aux;
+            aux = aux->nextstack;
+            for(int i = aux->index; i <= tail->index; i++){
+                aux->index = aux->index - 1;
+                aux = aux->nextstack;
+            }
+            
         }
     }
-    delete temp;
+    
 }
 
 int converte(string index)
@@ -111,12 +127,10 @@ void insertAtStart(int val, int pilhas) {
             head = newStack;
             head->index = 1;
             curr = head->nextstack;
-            delete newStack;
             for(int i = 1; i < pilhas; i++ ){
                 curr->index++;
                 curr = curr->nextstack;
             }
-            delete curr;
         }   
         push(val, 1);
     }
@@ -133,44 +147,83 @@ void insertAtTail(int val, int pilhas) {
             tail->index = pilhas;
         }
         push(val, pilhas);
-        delete newStack;
     }
 
-int main(){
+int procura(int index){
+    Stack * curr = new Stack();
+    curr = head;
+    int print;
+    while(curr->index != index)
+        curr = curr->nextstack;
+    print = curr->top->val;
+    return print;
+}
 
-    int pilhas;
+int main(){
+    int games;
+    int pilhas = 0;
     string index;
     int val;
-    bool first = 1;
     int printer = 0;
+    int *ppilha = &pilhas ;
     
-    cin >> pilhas;
+    cin >> games;
 
-        while (index[0] != 'E')
+        while (games > 0)
         {
-            cin >> index;
-            if(index[0] != 'E' && index[0] != ' '){
-                cin >> val; 
-               if(converte(index) == 0){
-                    pilhas++;
-                    insertAtStart(val, pilhas);
-               }
-               else if(converte(index) > pilhas){
-                pilhas++;
-                insertAtTail(val,pilhas);
-               }
-               else{
-
-               }
-               // if(first ||  != (val)){
-                 //   push(val, converte(index));
-                   /// first = 0;
-                //}
-                //else{
-                  //  pop(converte(index));                   
-                //}    
+            while (index[0] != 'E')
+            {
+                cin >> index;
+                
+                if(index[0] != 'E' && index[0] != ' '){
+                    cin >> val; 
+                    if(converte(index) == 0 || pilhas == 0){
+                            pilhas++;
+                            insertAtStart(val, pilhas);
+                    }
+                    else if(converte(index) > pilhas){
+                        pilhas++;
+                        insertAtTail(val,pilhas);
+                    }
+                    else{
+                        if(procura(converte(index)) != (val)){
+                            push(val, converte(index));
+                        }
+                        else{
+                            pop(converte(index), ppilha);                   
+                        }    
+                    }
+                }   
             }
-        }
+            
+            games--;
+            Stack * curr = new Stack();
+            curr = head;
+                cout <<"caso "<< printer<< ":";
+                printer++;
+                
+                for(int i = 0; i < pilhas; i++){
+                    Stack *aux = new Stack();
+                    
+                    
+                    if(i != pilhas -1){
+                    cout << " " << curr->top->val;
+                    aux = curr;
+                    curr = curr->nextstack;
+                    head = curr;
+                    delete aux;
+                    }
+                    else{
+                        cout <<" " << curr->top->val;
+                        aux = curr;
+                        head = NULL;
+                        tail = NULL;
+                    }
+                }
+                index = 'a';
+                pilhas = 0;
+                cout << "\n";    
+            }
 
 
     return 0;
