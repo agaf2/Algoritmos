@@ -1,21 +1,19 @@
 #include <iostream>
 
-//using namespace std;
+using namespace std;
 
-//struct Floor
-//{
+struct Floor
+{
     
 
-//};
+};
 
 
 int main(){
 
 int m;
 
-    //Floor 
-    scanf("%d", &m);
-    int andares[m];
+    Floor andares[m];
 
 
 
