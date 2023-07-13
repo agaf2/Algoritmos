@@ -12,7 +12,7 @@ struct Floor
 
 Floor** head = NULL;
 
-int hashing(int key, int m, int l, Floor** head, int cont, int realocing){
+int hashing(int key, int m, int l, Floor** head, int cont){
     int floor =  ((key % m) + cont) % m;
     int find = 0;
     int ok = 0;
@@ -22,6 +22,25 @@ int hashing(int key, int m, int l, Floor** head, int cont, int realocing){
         }
     }
     if(find == 1){
+        return floor;
+    }
+    else{
+        return -1;
+    }
+}
+
+int add(int key, int m, int l, Floor** head, int cont, int repeat, int realocing) {
+    int ok = 0;
+    int floor;
+    if (floor =hashing(key, m, l, head, cont) == -1) {
+        cont++;
+        repeat++;
+        if (repeat != m)
+            return add(key, m, l, head, cont, repeat, realocing);
+        else {
+            return 0;
+        }
+    } else(hashing(key, m, l, head, cont) != -1){
         for(int i = 0; i < l && ok != 1; i++){
             if(head[floor][i].key > key){
                 for(int j = l-1; j > i; j--){
@@ -32,62 +51,57 @@ int hashing(int key, int m, int l, Floor** head, int cont, int realocing){
                 head[floor][i].ocupado = 1;
                 ok = 1;
                 if(realocing != 1)
-                cout << floor << "." << i << endl;
+                    cout << floor << "." << i << endl;
             }
         }
-    }
-    if(find == 1){
         return 1;
-    }
-    else{
-        return 0;
-    }
-}
-
-int add(int key, int m, int l, Floor** head, int cont = 0, int repeat = 0, int realocing = 0) {
-    if (hashing(key, m, l, head, cont, realocing) == 0) {
-        cont++;
-        repeat++;
-        if (repeat != m)
-            return add(key, m, l, head, cont, repeat, realocing);
-        else {
-            return 0;
-        }
-    } else {
-        return 1;
-    }
-}
-
-
-void rem(int key, Floor** head, int m, int l){
-    int find = 0;
-    for(int i = 0; i < m && find == 0; i++){
-        for(int j = 0; j < l && find == 0; j++){
-            if(head[i][j].key == key){
-                head[i][j].ocupado = -1;
-                find = 1;
-                cout << i << "." << j << endl;
-            }
-        }
-    }
-    if(find == 0){
-        cout << "?.?" << endl;
     }
     
 }
 
-void qry(int key, Floor** head, int m, int l){
+
+void rem(int key, Floor** head, int m, int l, int cont, int repeat){
     int find = 0;
-    for(int i = 0; i < m && find == 0; i++){
-        for(int j = 0; j < l && find == 0; j++){
-            if(head[i][j].key == key){
-                find = 1;
-                cout << i << "." << j << endl;
-            }
+    if (int floor = hashing(key, m, l, head, cont) == -1) {
+        cont++;
+        repeat++;
+        if (repeat != m)
+            return rem(key, head, m, l, cont, repeat);
+        else {
+            cout << "?.?" << endl;
         }
     }
-    if(find == 0){
-        cout << "?.?" << endl;
+    else{
+        for(int i = 0; i < l && find == 0; i++){
+            if(head[floor][i].key == key){
+                head[floor][i].ocupado = -1;
+                find = 1;
+                cout << floor << "." << i << endl;
+            } 
+        }
+    }
+    
+}
+
+void qyr(int key, Floor** head, int m, int l, int cont, int repeat){
+ int find = 0;
+    if (int floor = hashing(key, m, l, head, cont) == -1) {
+        cont++;
+        repeat++;
+        if (repeat != m)
+            return rem(key, head, m, l, cont, repeat);
+        else {
+            cout << "?.?" << endl;
+        }
+    }
+    else{
+        for(int i = 0; i < l && find == 0; i++){
+            if(head[floor][i].key == key){
+                head[floor][i].ocupado = -1;
+                find = 1;
+                cout << floor << "." << i << endl;
+            } 
+        }
     }
 }
 
