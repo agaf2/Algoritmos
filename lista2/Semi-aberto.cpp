@@ -1,175 +1,198 @@
-#include <iostream>
 
-using namespace std;
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+//lollapalloza
+
+    typedef struct {
+        char nome[100];
+        char comida[100];
+        char bebida[100];
+        char artista[100];
+        int agregados;
+} ficha;
 
 
-
-struct Floor
-{
-    int key;
-    int ocupado;
-};
-
-Floor** head = NULL;
-
-int hashing(int key, int m, int l, Floor** head, int cont){
-    int floor =  ((key % m) + cont) % m;
-    int find = 0;
-    int ok = 0;
-    for(int i = 0; i < l && find == 0 ; i++){
-        if(head[floor][i].ocupado == 0){
-            find = 1;
-        }
-    }
-    if(find == 1){
-        return floor;
-    }
-    else{
-        return -1;
-    }
-}
-
-int add(int key, int m, int l, Floor** head, int cont, int repeat, int realocing) {
-    int ok = 0;
-    int floor;
-    if (floor =hashing(key, m, l, head, cont) == -1) {
-        cont++;
-        repeat++;
-        if (repeat != m)
-            return add(key, m, l, head, cont, repeat, realocing);
-        else {
-            return 0;
-        }
-    } else(hashing(key, m, l, head, cont) != -1){
-        for(int i = 0; i < l && ok != 1; i++){
-            if(head[floor][i].key > key){
-                for(int j = l-1; j > i; j--){
-                    head[floor][j].key = head[floor][j-1].key;
-                    head[floor][j].ocupado = head[floor][j-1].ocupado;
-                }
-                head[floor][i].key = key;
-                head[floor][i].ocupado = 1;
-                ok = 1;
-                if(realocing != 1)
-                    cout << floor << "." << i << endl;
-            }
-        }
-        return 1;
+int main() {
+int n; //numero de convidados
+//printf("digite o numero de convidados:\n");
+scanf("%d", &n);
+    
+    ficha convidado[n];
+    
+    for(int i =0; i<n; i++){
+     //   printf("digite o nome do convidado %d: ", i+1);
+        scanf(" %s", convidado[i].nome);
+       // printf (" digite a quantidade de agregados do convidado %d:", i+1);
+        scanf("%d", &convidado[i].agregados);
+        //printf("digite a comida do convidado %d: ", i+1);
+        scanf(" %s", convidado[i].comida);
+        //printf("digite a bebida do convidado %d: ", i+1);
+        scanf(" %s", convidado[i].bebida);
+       // printf("digite o artista do convidado %d: ", i+1);
+        scanf(" %[^\n]", convidado[i].artista);
     }
     
-}
-
-
-void rem(int key, Floor** head, int m, int l, int cont, int repeat){
-    int find = 0;
-    if (int floor = hashing(key, m, l, head, cont) == -1) {
-        cont++;
-        repeat++;
-        if (repeat != m)
-            return rem(key, head, m, l, cont, repeat);
-        else {
-            cout << "?.?" << endl;
-        }
-    }
-    else{
-        for(int i = 0; i < l && find == 0; i++){
-            if(head[floor][i].key == key){
-                head[floor][i].ocupado = -1;
-                find = 1;
-                cout << floor << "." << i << endl;
-            } 
-        }
-    }
+    //desempatar duas categorias c mesmo votos. ordem alfabeta
+    ficha favoritas;
     
-}
-
-void qyr(int key, Floor** head, int m, int l, int cont, int repeat){
- int find = 0;
-    if (int floor = hashing(key, m, l, head, cont) == -1) {
-        cont++;
-        repeat++;
-        if (repeat != m)
-            return rem(key, head, m, l, cont, repeat);
-        else {
-            cout << "?.?" << endl;
-        }
-    }
-    else{
-        for(int i = 0; i < l && find == 0; i++){
-            if(head[floor][i].key == key){
-                head[floor][i].ocupado = -1;
-                find = 1;
-                cout << floor << "." << i << endl;
-            } 
-        }
-    }
-}
-
-int main(){
-
-int m, l, key;
-string input;
-
-cin >> m >> l;
-
-    Floor** newBuilding = new Floor*[m];
-    for (int i = 0; i < m; i++){
-        newBuilding[i] = new Floor[l];
-        for(int j = 0; j < l; j++){
-            newBuilding[i][j].ocupado = 0;
-            newBuilding[i][j].key = 100000;
-        }
-    }
-
-    head = newBuilding;
+    int comida [5] = {0, 0, 0, 0, 0};
+    int bebida[5] = {0, 0, 0, 0, 0};
+    int artista [5] = {0, 0, 0, 0, 0};
     
-    while(input != "END"){
-        cin >> input;
-        if(input != "END"){
-        
-            cin >> key;
-            if(input == "ADD"){
-                if(add(key, m, l, head, 0, 0, 0) == 1);
-                else{
-                    m = 2*m + 1;
-                    Floor** temp = head;
-                
-                    Floor** newBuilding = new Floor*[m];
-                    for (int i = 0; i < m; i++){
-                        newBuilding[i] = new Floor[l];
-                        for(int j = 0; j < l; j++){
-                            newBuilding[i][j].ocupado = 0;
-                            newBuilding[i][j].key = 100000;
-                        }
-                    }
+    int menorAgregados = 1000000; // valor inicial alto para garantir que qualquer nÃºmero seja menor
 
-                    head = newBuilding;
-                
-                    for(int i = 0; i < ((m-1)/2); i++){
-                        for(int j = 0; j < l; j++){
-                            if(temp[i][j].ocupado == 1){
-                                add(temp[i][j].key, m, l, head, 0, 0, 1);
-                           }
-                        }
-                    }       
-                    for (int i = 0; i < ((m-1)/2); i++){
-                        delete[] temp[i];
-                    } 
-                    add(key, m, l, head, 0, 0, 0);
-                }
-            }
-            else if(input == "REM"){
-                rem(key, head, m, l);
-            }
-            else if(input == "QRY"){
-                qry(key, head, m, l);
-            }
+    for (int i = 0; i < n; i++) {
+        if (convidado[i].agregados < menorAgregados) {
+            menorAgregados = convidado[i].agregados;
         }
     }
-    for (int i = 0; i < m; i++){
-        delete[] head[i];
+
+    printf(" %d\n", menorAgregados);
+
+    
+    
+    for (int i = 0; i < n; i++) {
+    //comidq
+        if (strcmp(convidado[i].comida, "coxinha") == 0) {
+            comida[1]++;
+    }   else if (strcmp(convidado[i].comida, "brigadeiro") == 0) {
+            comida[0]++;
+    }   else if (strcmp(convidado[i].comida, "risoto") == 0) {
+            comida[4]++;
+    }   else if (strcmp(convidado[i].comida, "picanha") == 0) {
+            comida[2]++;
+    }   else if (strcmp(convidado[i].comida, "pizza") == 0) {
+            comida[3]++;
     }
-    delete[] head; 
-      
-    return 0;
+
+    // bebida
+    if (strcmp(convidado[i].bebida, "agua") == 0) 
+        bebida[0]++;
+     else if (strcmp(convidado[i].bebida, "suco") == 0) 
+         bebida[4]++;
+     else if (strcmp(convidado[i].bebida, "monster") == 0) 
+         bebida[2]++;
+     else if (strcmp(convidado[i].bebida, "cafe") == 0) 
+         bebida[1]++;
+     else if (strcmp(convidado[i].bebida, "pitu") == 0) 
+         bebida[3]++;
+    
+
+    // artista
+    if (strcmp(convidado[i].artista, "Gustavo Mioto") == 0) {
+        artista[1]++;
+    } else if (strcmp(convidado[i].artista, "Billie Eilish") == 0) {
+        artista[0]++;
+    } else if (strcmp(convidado[i].artista, "Pericles") == 0) {
+        artista[3]++;
+    } else if (strcmp(convidado[i].artista, "Shevchenko e Elloco") == 0) {
+        artista[4]++;;
+    } else if (strcmp(convidado[i].artista, "Joao Gomes") == 0) {
+        artista[2]++;
+        }
+    }
+
+  
+    int parou = 0;
+
+    for (int i =0; i < 5 && !parou; i++){
+        int cont = 0;
+        parou =0;
+        for (int j = 0; j <= 5; j ++){
+            if (comida[i] > comida[j]){
+                cont++;
+            }
+        } if (cont == 4){
+            parou = 1;
+            if (i == 0){
+                printf("brigadeiro\n");
+            }
+            if (i == 1){
+                printf("coxinha\n");
+            }
+            if (i == 2){
+                printf("picanha\n");
+            }
+            if (i == 3){
+                printf("pizza\n");
+            }
+            if (i == 4){
+                printf("risoto\n");
+            }
+    }
+    }  
+    
+  parou = 0;
+  
+    for (int i =0; i < 5 && !parou; i++){
+        int cont = 0;
+        parou =0;
+        for (int j = 0; j <= 5; j ++){
+            if (bebida[i] > bebida[j]){
+                cont++;
+            }
+        } if (cont == 4){
+            parou = 1;
+            if (i == 0){
+                printf("agua\n");
+            }
+            if (i == 1){
+                printf("cafe\n");
+            }
+            if (i == 2){
+                printf("monster\n");
+            }
+            if (i == 3){
+                printf("pitu\n");
+            }
+            if (i == 4){
+                printf("suco\n");
+            }
+    }
+    }   
+    
+  parou = 0;
+  
+    for (int i =0; i < 5 && !parou; i++){
+        int cont = 0;
+        parou =0;
+        for (int j = 0; j <= 5; j ++){
+            if (artista[i] > artista[j]){
+                cont++;
+            }
+        } if (cont == 4){
+            parou = 1;
+            if (i == 0){
+                printf("Billie Eilish\n");
+            }
+            if (i == 1){
+                printf("Gustavo Mioto\n");
+            }
+            if (i == 2){
+                printf("Joao Gomes\n");
+            }
+            if (i == 3){
+                printf("Pericles\n");
+            }
+            if (i == 4){
+                printf("Shevchenko e Elloco\n");
+            }
+    }
+    }   
+    
+    printf("convidados vip:\n");
+    
+    
+    
+  
+    
+    
+
+
+
+
+
+return 0;
 }
