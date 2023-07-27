@@ -1,198 +1,207 @@
+#include <iostream>
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
-//lollapalloza
+using namespace std;
 
-    typedef struct {
-        char nome[100];
-        char comida[100];
-        char bebida[100];
-        char artista[100];
-        int agregados;
-} ficha;
+struct Floor
+{
+    int key;
+    int ocupado;
+    int vagas;
+};
+
+Floor** head = NULL;
+
+int binary_insert(int key, int floor, int l){
+    int left = 0, right = l-1;
+    while(left < right){
+        int middle = (left + right)/2;
+        if(head[floor][middle].key <= key)
+            left = middle + 1;
+        else
+            right = middle;  
+    }
+    if(left < head[floor]->vagas && head[floor][left].key < key)
+        left++;
+    return left;
+}
+
+int binary_search(int key, int floor, int l){
+    int left = 0;
+    int right = l-1;
+    int middle = (left + right)/2;
+    int find = 0;
+    while(left <= right && find == 0){
+        if(head[floor][middle].key == key){
+            find = 1;
+        }
+        else if(head[floor][middle].key > key){
+            right = middle - 1;
+            middle = (left + right)/2;      
+        }
+        else{
+            left = middle + 1;
+            middle = (left + right)/2;
+        }
+    }
+    if(find == 0){
+        return -1;
+    }
+    else{
+        return middle;
+    }
+}
+
+int hashing(int key, int m, int cont){
+    int floor =  ((key % m) + cont) % m;
+        return floor;
+}
+int add(int key, int m, int l, Floor** head, int cont, int realocing) {
+    int aux;
+    int local;
+    int floor = hashing(key, m, cont);
+    if (head[floor]->vagas == l) {
+        cont++;
+        if (cont != m)
+            return add(key, m, l, head, cont, realocing);
+        else {
+            return 0;
+        }
+    } 
+    else{
+            local = binary_insert(key, floor, head[floor]->vagas);
+            if(head[floor]->vagas != 0){
+                for(int i = head[floor]->vagas; i > local; i--){
+                    head[floor][i] = head[floor][i-1];
+                }
+            }
+                head[floor][local].key = key;
+                head[floor][local].ocupado = 1;
+                head[floor]->vagas = head[floor]->vagas + 1;
+                if(realocing != 1)
+                    cout << floor << "." << local << endl;
+            
+        
+        return 1;
+    }
+}
 
 
-int main() {
-int n; //numero de convidados
-//printf("digite o numero de convidados:\n");
-scanf("%d", &n);
-    
-    ficha convidado[n];
-    
-    for(int i =0; i<n; i++){
-     //   printf("digite o nome do convidado %d: ", i+1);
-        scanf(" %s", convidado[i].nome);
-       // printf (" digite a quantidade de agregados do convidado %d:", i+1);
-        scanf("%d", &convidado[i].agregados);
-        //printf("digite a comida do convidado %d: ", i+1);
-        scanf(" %s", convidado[i].comida);
-        //printf("digite a bebida do convidado %d: ", i+1);
-        scanf(" %s", convidado[i].bebida);
-       // printf("digite o artista do convidado %d: ", i+1);
-        scanf(" %[^\n]", convidado[i].artista);
+void rem(int key, Floor** head, int m, int l, int cont){
+    int find = 0;
+    int floor = hashing(key, m, cont);
+    int result = binary_search(key, floor, head[floor]->vagas);
+    if(result != -1 && head[floor][result].ocupado != -1){
+        head[floor][result].ocupado = -1;
+        cout << floor << "." << result << endl;
+        find = 1;
+    } 
+    else if( result != -1 && head[floor][result].ocupado == -1){
+        cout << "?.?" << endl;
+        find = 1;
+    }
+    if (find == 0) {
+        cont++;
+        if (cont != m)
+            return rem(key, head, m, l, cont);
+        else {
+            cout << "?.?" << endl;
+        }
     }
     
-    //desempatar duas categorias c mesmo votos. ordem alfabeta
-    ficha favoritas;
     
-    int comida [5] = {0, 0, 0, 0, 0};
-    int bebida[5] = {0, 0, 0, 0, 0};
-    int artista [5] = {0, 0, 0, 0, 0};
-    
-    int menorAgregados = 1000000; // valor inicial alto para garantir que qualquer nÃºmero seja menor
+}
 
-    for (int i = 0; i < n; i++) {
-        if (convidado[i].agregados < menorAgregados) {
-            menorAgregados = convidado[i].agregados;
+void qry(int key, Floor** head, int m, int l, int cont){
+ int find = 0;
+ int floor = hashing(key, m,cont);
+ int result = binary_search(key, floor, head[floor]->vagas);
+    if( result != -1 && head[floor][result].ocupado != -1){
+        cout << floor << "." << result << endl;
+        find = 1;
+    } 
+    else if( result != -1 && head[floor][result].ocupado == -1){
+        cout << "?.?" << endl;
+        find = 1;
+    }
+    if (find == 0) {
+        cont++;
+        if (cont != m)
+            return qry(key, head, m, l, cont);
+        else {
+            cout << "?.?" << endl;
+        }
+    }
+}
+
+int main(){
+
+int m, l, key;
+string input;
+
+cin >> m >> l;
+
+    Floor** newBuilding = new Floor*[m];
+    for (int i = 0; i < m; i++){
+        newBuilding[i] = new Floor[l];
+        for(int j = 0; j < l; j++){
+            newBuilding[i][j].ocupado = 0;
+            newBuilding[i][j].key = 100000;
+            newBuilding[i]->vagas = 0;
         }
     }
 
-    printf(" %d\n", menorAgregados);
-
+    head = newBuilding;
     
-    
-    for (int i = 0; i < n; i++) {
-    //comidq
-        if (strcmp(convidado[i].comida, "coxinha") == 0) {
-            comida[1]++;
-    }   else if (strcmp(convidado[i].comida, "brigadeiro") == 0) {
-            comida[0]++;
-    }   else if (strcmp(convidado[i].comida, "risoto") == 0) {
-            comida[4]++;
-    }   else if (strcmp(convidado[i].comida, "picanha") == 0) {
-            comida[2]++;
-    }   else if (strcmp(convidado[i].comida, "pizza") == 0) {
-            comida[3]++;
-    }
+    while(input != "END"){
+        cin >> input;
+        if(input != "END"){
+        
+            cin >> key;
+            if(input == "ADD"){
+                if(add(key, m, l, head, 0, 0) == 1);
+                else{
+                    m = 2*m + 1;
+                    Floor** temp = head;
+                
+                    Floor** newBuilding = new Floor*[m];
+                    for (int i = 0; i < m; i++){
+                        newBuilding[i] = new Floor[l];
+                        for(int j = 0; j < l; j++){
+                            newBuilding[i][j].ocupado = 0;
+                            newBuilding[i][j].key = 100000;
+                            newBuilding[i]->vagas = 0;
+                        }
+                    }
 
-    // bebida
-    if (strcmp(convidado[i].bebida, "agua") == 0) 
-        bebida[0]++;
-     else if (strcmp(convidado[i].bebida, "suco") == 0) 
-         bebida[4]++;
-     else if (strcmp(convidado[i].bebida, "monster") == 0) 
-         bebida[2]++;
-     else if (strcmp(convidado[i].bebida, "cafe") == 0) 
-         bebida[1]++;
-     else if (strcmp(convidado[i].bebida, "pitu") == 0) 
-         bebida[3]++;
-    
+                    head = newBuilding;
+                                    
+                    for(int i = 0; i < ((m-1)/2); i++){
+                        for(int j = 0; j < l; j++){
+                            if(temp[i][j].ocupado == 1){
+                                add(temp[i][j].key, m, l, head, 0, 1);
+                           }
+                        }
+                    }       
+                    for (int i = 0; i < ((m-1)/2); i++){
+                        delete[] temp[i];
+                    } 
+                    delete[] temp;
 
-    // artista
-    if (strcmp(convidado[i].artista, "Gustavo Mioto") == 0) {
-        artista[1]++;
-    } else if (strcmp(convidado[i].artista, "Billie Eilish") == 0) {
-        artista[0]++;
-    } else if (strcmp(convidado[i].artista, "Pericles") == 0) {
-        artista[3]++;
-    } else if (strcmp(convidado[i].artista, "Shevchenko e Elloco") == 0) {
-        artista[4]++;;
-    } else if (strcmp(convidado[i].artista, "Joao Gomes") == 0) {
-        artista[2]++;
+                    add(key, m, l, head, 0, 0);
+                }
+            }
+            else if(input == "REM"){
+                rem(key, head, m, l, 0);
+            }
+            else if(input == "QRY"){
+                qry(key, head, m, l, 0);
+            }
         }
     }
-
-  
-    int parou = 0;
-
-    for (int i =0; i < 5 && !parou; i++){
-        int cont = 0;
-        parou =0;
-        for (int j = 0; j <= 5; j ++){
-            if (comida[i] > comida[j]){
-                cont++;
-            }
-        } if (cont == 4){
-            parou = 1;
-            if (i == 0){
-                printf("brigadeiro\n");
-            }
-            if (i == 1){
-                printf("coxinha\n");
-            }
-            if (i == 2){
-                printf("picanha\n");
-            }
-            if (i == 3){
-                printf("pizza\n");
-            }
-            if (i == 4){
-                printf("risoto\n");
-            }
+    for (int i = 0; i < m; i++){
+        delete[] head[i];
     }
-    }  
-    
-  parou = 0;
-  
-    for (int i =0; i < 5 && !parou; i++){
-        int cont = 0;
-        parou =0;
-        for (int j = 0; j <= 5; j ++){
-            if (bebida[i] > bebida[j]){
-                cont++;
-            }
-        } if (cont == 4){
-            parou = 1;
-            if (i == 0){
-                printf("agua\n");
-            }
-            if (i == 1){
-                printf("cafe\n");
-            }
-            if (i == 2){
-                printf("monster\n");
-            }
-            if (i == 3){
-                printf("pitu\n");
-            }
-            if (i == 4){
-                printf("suco\n");
-            }
-    }
-    }   
-    
-  parou = 0;
-  
-    for (int i =0; i < 5 && !parou; i++){
-        int cont = 0;
-        parou =0;
-        for (int j = 0; j <= 5; j ++){
-            if (artista[i] > artista[j]){
-                cont++;
-            }
-        } if (cont == 4){
-            parou = 1;
-            if (i == 0){
-                printf("Billie Eilish\n");
-            }
-            if (i == 1){
-                printf("Gustavo Mioto\n");
-            }
-            if (i == 2){
-                printf("Joao Gomes\n");
-            }
-            if (i == 3){
-                printf("Pericles\n");
-            }
-            if (i == 4){
-                printf("Shevchenko e Elloco\n");
-            }
-    }
-    }   
-    
-    printf("convidados vip:\n");
-    
-    
-    
-  
-    
-    
-
-
-
-
-
-return 0;
+    delete[] head; 
+      
+    return 0;
 }
