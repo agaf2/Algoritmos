@@ -10,7 +10,6 @@ struct Floor
 };
 
 Floor** head = NULL;
-
 int binary_insert(int key, int floor, int l){
     int left = 0, right = l-1;
     while(left < right){
