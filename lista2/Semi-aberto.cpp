@@ -10,6 +10,7 @@ struct Floor
 };
 
 Floor** head = NULL;
+
 int binary_insert(int key, int floor, int l){
     int left = 0, right = l-1;
     while(left < right){
@@ -54,6 +55,7 @@ int hashing(int key, int m, int cont){
     int floor =  ((key % m) + cont) % m;
         return floor;
 }
+
 int add(int key, int m, int l, Floor** head, int cont, int realocing) {
     int aux;
     int local;
