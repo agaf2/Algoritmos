@@ -2,108 +2,88 @@
 
 using namespace std;
 
-class UnionFind{
-    private:
-    
-    int val;
-    UnionFind *parent;
-    int height;
+class UnionFind {
 
-    public:
-    
-    UnionFind* carrega(UnionFind *U,int n){
-        for(int i = 0; i < n*n; i++){
-            U[i].val = i;
-            U[i].parent = nullptr;
-            U[i].height = 0;
-        }   
-    }
+public:
 
-    UnionFind *find(UnionFind *U,UnionFind *x){
-        if(x->parent == x){
-            return x;
+    UnionFind(int n) {
+        parent = new int[n];
+        height = new int[n];
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+            height[i] = 0;
         }
-
-        x->parent = find(U,x->parent);
-        return x->parent;
     }
 
-    int Union(UnionFind *U, UnionFind* a, UnionFind* b){
-        UnionFind * ra = find(U,a);
-        UnionFind * rb = find(U,b);
-        if(ra->height == rb->height){
-            rb->parent = rb;
-            ra->height++;
+    int find(int x) {
+        if(parent[x] == x)
+            return x;
+        else
+            parent[x] = find(parent[x]);
+            return parent[x];
+    }
+
+    void Union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+
+        if(height[rootY] == height[rootX]){
+            parent[rootY] = rootX;
+            height[rootX]++;
         }
         else{
-            if(ra->height > rb->height)
-                rb->parent = ra;
+            if(height[rootX] > height[rootY])
+                parent[rootY] = rootX;
             else
-                ra->parent = rb;
-            
+                parent[rootX] = rootY;
         }
-
+        
     }
 
+    bool sameClass(int x, int y) {
+        return find(x) == find(y);
+    }
+
+    ~UnionFind() {
+        delete[] parent;
+        delete[] height;
+    }	
+
+private:
+    int *parent;
+    int *height;
 };
 
-struct Pares
-    {
-        int a;
-        int b;
-        int j;
-    };
-
 int main(){
-    
     int cases;
 
     cin >> cases;
     for(int i = 0; i < cases; i++){
-        int n, m, q, flag =1, input;
+        int n, m, q;
         cin >> n >> m >> q;
+                
+        UnionFind U(n*n);
 
-        UnionFind *U = new UnionFind[n*n];    
-
-        int rem[2*(n*n-n)-1];
-        for (int j = 0; j < m; j++){
-            if(flag){
-                cin >> input;
-                flag = 0;
-            }
-            if(input == i){
-                rem[j] = 1;
-                flag = 1;
+       for(int j = 0, input; j < m; j++){
+            cin >> input;        
+            if( input %(2* n - 1) < n - 1){
+                   int local = n*(input / (2*n - 1)) + input%(2*n - 1);
+                   U.Union(local, local + 1 ); // horizontal
             }
             else{
-                rem[j] = 0;
-            }
-        }
-        Pares pares[q];
-
-        for(int j = 0; j < q; j++){
-            cin >> pares[j].a >> pares[j].b;
+                    int local = n*( input /(2*n - 1)) + input % (2*n - 1) - (n - 1);
+                    U.Union(local, local + n); // vertical
+            } 
         }
 
-        U = U->carrega(U,n*n);
-
-        for(int i = 0; i < q; i++){
-            UnionFind * pa, *pb;
-            for(int k = 0; k < n*n; k++){
-                if(pares[i].a == k)
-                    pa = &U[k];
-                if(pares[i].b == k)
-                    pb = &U[k];
-            }
-
-            if(U[i].Union(U,  pa, pb)){
-                cout << cases << "." << i << " " << "1" <<endl;
-            }
-            else{
-                cout << cases << "." << i << " " << "0" <<endl;
-            }
+        for(int j = 0, a ,b ; j < q; j++){
+            cin >> a >> b;   // pega os pares de entrada
+            U.sameClass(a,b) ? cout << i << "." << j << " " << "1" <<endl : cout << i << "." << j << " " << "0" <<endl; 
         }
+   
 
+        
+        printf("\n");
     }
 
 
