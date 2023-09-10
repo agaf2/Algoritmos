@@ -9,7 +9,7 @@ public:
     UnionFind(int n) {
         parent = new int[n];
         height = new int[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             parent[i] = i;
             height[i] = 0;
         }
