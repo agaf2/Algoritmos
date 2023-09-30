@@ -3,7 +3,7 @@
 #include <string.h>
 
 typedef struct {
-    telefone[10];
+    int telefone[10];
     char mensagem[255];
 } Frase;
 
