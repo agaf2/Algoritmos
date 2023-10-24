@@ -195,5 +195,6 @@ int main(){
             free(predio[i].vagas);
         }
         free(predio);
+    
     return 0;
 }
