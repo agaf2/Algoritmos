@@ -222,6 +222,5 @@ int main() {
             Cidade.dijkstra(a, b);
         }
     }
-
     return 0;
 }
