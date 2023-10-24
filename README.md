@@ -2,4 +2,4 @@
           
 Questões realizadas na cadeira IF672 em C/C++ envolvendo estruturas de dados e raciocínios lógicos/matematicos.
 
-![Uploading 1__Q693AsyQepW3eToV0b1nA (1).jpg…]()
+![1__Q693AsyQepW3eToV0b1nA (1)](https://github.com/agaf2/Algoritmos/assets/119670807/bb7156ca-091f-4192-bd0a-36ae5fabe49a)
