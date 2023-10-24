@@ -43,6 +43,7 @@ int main() {
     int pilhas;
     int cont = 0;
     int printer = 0;
+    
     cin >> pilhas;
 
     while (printer < pilhas){
