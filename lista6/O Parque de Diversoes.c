@@ -69,6 +69,5 @@ int main() {
     free(C);
     free(K);
     free(dp);
-
     return 0;
 }
